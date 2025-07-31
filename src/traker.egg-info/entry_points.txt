@@ -1,0 +1,2 @@
+[console_scripts]
+traker = traker.main:main

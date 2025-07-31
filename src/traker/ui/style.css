@@ -1,0 +1,499 @@
+/* Nordic Dark Theme for Traker - Complete Coverage */
+/* Based on the polybar configuration colors */
+
+/* ==== COLOR VARIABLES ==== */
+@define-color bg_color #2e3440;
+@define-color bg_alt_color #3b4252;
+@define-color bg_accent_color #434c5e;
+@define-color fg_color #eceff4;
+@define-color fg_alt_color #d8dee9;
+@define-color selection_bg_color #4c566a;
+@define-color selection_fg_color #88c0d0;
+@define-color primary_color #81a1c1;
+@define-color alert_color #bf616a;
+@define-color alert_alt_color #d08770;
+@define-color success_color #a3be8c;
+@define-color warning_color #ebcb8b;
+@define-color info_color #88c0d0;
+@define-color nordic_cyan #8fbcbb;
+@define-color nordic_purple #b48ead;
+
+/* ==== UNIVERSAL RULES - FORCE ALL WIDGETS ==== */
+* {
+    background-color: @bg_color;
+    color: @fg_color;
+    outline-color: @primary_color;
+    outline-style: solid;
+    outline-width: 0px;
+}
+
+/* ==== BASE WIDGETS ==== */
+window,
+applicationwindow,
+dialog {
+    background-color: @bg_color;
+    color: @fg_color;
+}
+
+/* ==== CONTAINERS ==== */
+box,
+grid,
+paned,
+viewport,
+scrolledwindow,
+overlay,
+revealer,
+stack,
+stackswitcher {
+    background-color: transparent;
+    color: @fg_color;
+}
+
+/* Specific container backgrounds */
+.background {
+    background-color: @bg_color;
+}
+
+.background-alt {
+    background-color: @bg_alt_color;
+}
+
+.background-accent {
+    background-color: @bg_accent_color;
+}
+
+/* ==== BUTTONS - COMPLETE OVERRIDE ==== */
+button {
+    background-color: @bg_accent_color !important;
+    color: @fg_color !important;
+    border: 1px solid @selection_bg_color !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    margin: 2px !important;
+    outline: none !important;
+}
+
+button:hover {
+    background-color: @selection_bg_color !important;
+    color: @selection_fg_color !important;
+}
+
+button:active,
+button:checked {
+    background-color: @primary_color !important;
+    color: @bg_color !important;
+}
+
+button:disabled {
+    background-color: @bg_alt_color !important;
+    color: @fg_alt_color !important;
+    opacity: 0.5;
+}
+
+/* Button specific styles */
+button.start-button {
+    background-color: @success_color !important;
+    color: @bg_color !important;
+}
+
+button.start-button:hover {
+    background-color: @info_color !important;
+    color: @bg_color !important;
+}
+
+button.pause-button {
+    background-color: @warning_color !important;
+    color: @bg_color !important;
+}
+
+button.pause-button:hover {
+    background-color: @alert_alt_color !important;
+    color: @bg_color !important;
+}
+
+button.complete-button {
+    background-color: @success_color !important;
+    color: @bg_color !important;
+}
+
+button.delete-button {
+    background-color: @alert_color !important;
+    color: @fg_color !important;
+}
+
+button.delete-button:hover {
+    background-color: @alert_alt_color !important;
+    color: @fg_color !important;
+}
+
+button.flat {
+    background-color: transparent !important;
+    border: none !important;
+    color: @fg_color !important;
+}
+
+button.flat:hover {
+    background-color: @bg_accent_color !important;
+    color: @selection_fg_color !important;
+}
+
+/* ==== TEXT INPUTS ==== */
+entry,
+text,
+textview,
+textview text {
+    background-color: @bg_alt_color !important;
+    color: @fg_color !important;
+    border: 1px solid @selection_bg_color !important;
+    border-radius: 4px !important;
+    padding: 8px !important;
+    caret-color: @selection_fg_color !important;
+    selection-background-color: @selection_bg_color !important;
+    selection-color: @selection_fg_color !important;
+}
+
+entry:focus,
+textview:focus,
+textview text:focus {
+    border-color: @primary_color !important;
+    background-color: @bg_accent_color !important;
+    outline: none !important;
+}
+
+entry placeholder {
+    color: @fg_alt_color !important;
+}
+
+/* ==== LABELS ==== */
+label {
+    color: @fg_color !important;
+    background-color: transparent !important;
+}
+
+label.title {
+    color: @selection_fg_color !important;
+    font-weight: bold;
+}
+
+label.status {
+    color: @fg_alt_color !important;
+}
+
+label.description {
+    color: @fg_alt_color !important;
+}
+
+/* Status-specific colors */
+.status-pending {
+    color: @warning_color !important;
+}
+
+.status-in-progress {
+    color: @info_color !important;
+}
+
+.status-paused {
+    color: @nordic_purple !important;
+}
+
+.status-completed {
+    color: @success_color !important;
+}
+
+/* ==== LIST WIDGETS ==== */
+listbox,
+listboxrow,
+list,
+row {
+    background-color: @bg_color !important;
+    color: @fg_color !important;
+    border-color: @selection_bg_color !important;
+}
+
+listboxrow {
+    background-color: @bg_alt_color !important;
+    border-bottom: 1px solid @bg_accent_color !important;
+    padding: 8px !important;
+}
+
+listboxrow:hover {
+    background-color: @bg_accent_color !important;
+}
+
+listboxrow:selected {
+    background-color: @selection_bg_color !important;
+    color: @selection_fg_color !important;
+}
+
+/* ==== FRAMES ==== */
+frame,
+frame > border {
+    border: 1px solid @selection_bg_color !important;
+    border-radius: 6px !important;
+    background-color: @bg_alt_color !important;
+}
+
+frame > label {
+    color: @selection_fg_color !important;
+    font-weight: bold;
+    padding: 0 8px;
+    background-color: @bg_alt_color !important;
+}
+
+/* ==== SCROLLBARS ==== */
+scrollbar {
+    background-color: @bg_alt_color !important;
+    border: none !important;
+}
+
+scrollbar slider {
+    background-color: @selection_bg_color !important;
+    border-radius: 4px !important;
+    border: none !important;
+}
+
+scrollbar slider:hover {
+    background-color: @primary_color !important;
+}
+
+scrollbar button {
+    background-color: @bg_accent_color !important;
+    color: @fg_color !important;
+    border: none !important;
+}
+
+/* ==== SPIN BUTTONS ==== */
+spinbutton {
+    background-color: @bg_alt_color !important;
+    color: @fg_color !important;
+    border: 1px solid @selection_bg_color !important;
+    border-radius: 4px !important;
+}
+
+spinbutton:focus {
+    border-color: @primary_color !important;
+}
+
+spinbutton button {
+    background-color: @bg_accent_color !important;
+    border: none !important;
+    color: @selection_fg_color !important;
+}
+
+spinbutton button:hover {
+    background-color: @selection_bg_color !important;
+}
+
+spinbutton entry {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+/* ==== PROGRESS BARS ==== */
+progressbar {
+    background-color: @bg_alt_color !important;
+    border-radius: 4px !important;
+    border: 1px solid @selection_bg_color !important;
+}
+
+progressbar progress {
+    background-color: @primary_color !important;
+    border-radius: 4px !important;
+}
+
+/* ==== SCALES/SLIDERS ==== */
+scale {
+    background-color: transparent !important;
+}
+
+scale slider {
+    background-color: @primary_color !important;
+    border: 1px solid @selection_bg_color !important;
+    border-radius: 50% !important;
+}
+
+scale trough {
+    background-color: @bg_alt_color !important;
+    border-radius: 4px !important;
+    border: 1px solid @selection_bg_color !important;
+}
+
+/* ==== SEPARATORS ==== */
+separator {
+    background-color: @selection_bg_color !important;
+    min-height: 1px;
+    min-width: 1px;
+}
+
+/* ==== MENUS AND POPOVERS ==== */
+popover,
+menu {
+    background-color: @bg_alt_color !important;
+    color: @fg_color !important;
+    border: 1px solid @selection_bg_color !important;
+    border-radius: 6px !important;
+}
+
+menuitem,
+modelbutton {
+    background-color: transparent !important;
+    color: @fg_color !important;
+    padding: 8px 12px !important;
+}
+
+menuitem:hover,
+modelbutton:hover {
+    background-color: @selection_bg_color !important;
+    color: @selection_fg_color !important;
+}
+
+/* ==== NOTEBOOKS/TABS ==== */
+notebook {
+    background-color: @bg_color !important;
+    border: 1px solid @selection_bg_color !important;
+}
+
+notebook tab {
+    background-color: @bg_alt_color !important;
+    color: @fg_alt_color !important;
+    border: 1px solid @selection_bg_color !important;
+    padding: 8px 12px !important;
+}
+
+notebook tab:checked {
+    background-color: @bg_accent_color !important;
+    color: @selection_fg_color !important;
+}
+
+/* ==== CHECK/RADIO BUTTONS ==== */
+checkbutton,
+radiobutton {
+    color: @fg_color !important;
+    background-color: transparent !important;
+}
+
+checkbutton check,
+radiobutton radio {
+    background-color: @bg_alt_color !important;
+    border: 1px solid @selection_bg_color !important;
+    -gtk-icon-source: none;
+}
+
+checkbutton check:checked,
+radiobutton radio:checked {
+    background-color: @primary_color !important;
+    color: @bg_color !important;
+    -gtk-icon-source: -gtk-icontheme("object-select-symbolic");
+}
+
+/* ==== TREE/LIST VIEWS ==== */
+treeview,
+columnview {
+    background-color: @bg_color !important;
+    color: @fg_color !important;
+    border: 1px solid @selection_bg_color !important;
+}
+
+treeview:selected,
+columnview:selected {
+    background-color: @selection_bg_color !important;
+    color: @selection_fg_color !important;
+}
+
+treeview header,
+columnview header {
+    background-color: @bg_accent_color !important;
+    color: @fg_color !important;
+    border-bottom: 1px solid @selection_bg_color !important;
+}
+
+/* ==== HEADERS ==== */
+headerbar {
+    background-color: @bg_alt_color !important;
+    color: @fg_color !important;
+    border-bottom: 1px solid @selection_bg_color !important;
+}
+
+headerbar button {
+    background-color: transparent !important;
+    border: none !important;
+    color: @selection_fg_color !important;
+}
+
+headerbar button:hover {
+    background-color: @bg_accent_color !important;
+}
+
+/* ==== TOOLTIPS ==== */
+tooltip {
+    background-color: @bg_alt_color !important;
+    color: @fg_color !important;
+    border: 1px solid @selection_bg_color !important;
+    border-radius: 4px !important;
+    padding: 8px !important;
+}
+
+/* ==== CUSTOM CLASSES ==== */
+.timer-display {
+    color: @selection_fg_color !important;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.timer-display.break-time {
+    color: @success_color !important;
+}
+
+.timer-display.work-time {
+    color: @selection_fg_color !important;
+}
+
+.progress-label {
+    color: @primary_color !important;
+}
+
+.subtask-container {
+    background-color: @bg_alt_color !important;
+    border-left: 3px solid @nordic_cyan !important;
+    margin-left: 16px;
+    padding-left: 8px;
+}
+
+.subtask-label {
+    color: @fg_alt_color !important;
+    font-size: smaller;
+}
+
+.context-task {
+    border-left-color: @nordic_purple !important;
+}
+
+/* ==== FORCE OVERRIDE FOR STUBBORN ELEMENTS ==== */
+.view,
+.content-view,
+scrolledwindow > viewport,
+scrolledwindow > viewport > widget {
+    background-color: @bg_color !important;
+    color: @fg_color !important;
+}
+
+/* ==== DIALOG SPECIFIC ==== */
+dialog,
+dialog box,
+dialog grid,
+dialog .dialog-content-area {
+    background-color: @bg_color !important;
+    color: @fg_color !important;
+}
+
+/* ==== FORCE WHITE BACKGROUNDS TO DARK ==== */
+/* This is the nuclear option - forces any remaining white backgrounds */
+[style*="background-color: white"],
+[style*="background-color: #ffffff"],
+[style*="background-color: #fff"],
+[style*="background: white"],
+[style*="background: #ffffff"],
+[style*="background: #fff"] {
+    background-color: @bg_color !important;
+    color: @fg_color !important;
+}

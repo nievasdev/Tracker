@@ -1,0 +1,15 @@
+README.md
+setup.py
+src/traker/__init__.py
+src/traker/main.py
+src/traker/task.py
+src/traker/task_manager.py
+src/traker.egg-info/PKG-INFO
+src/traker.egg-info/SOURCES.txt
+src/traker.egg-info/dependency_links.txt
+src/traker.egg-info/entry_points.txt
+src/traker.egg-info/requires.txt
+src/traker.egg-info/top_level.txt
+src/traker/ui/__init__.py
+src/traker/ui/main_window.py
+src/traker/ui/timer_widget.py
