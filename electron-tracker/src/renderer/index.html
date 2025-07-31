@@ -12,7 +12,7 @@
         <header class="header">
             <h1 class="app-title">Tracker - Task Manager</h1>
             <div class="header-actions">
-                <button id="add-task-btn" class="btn btn-start">Add Task</button>
+                <button id="add-task-btn" class="btn btn-start hidden">Add Task</button>
                 <button id="refresh-btn" class="btn btn-start">Refresh</button>
             </div>
         </header>
@@ -56,8 +56,24 @@
             </div>
         </section>
 
-        <!-- Task List -->
-        <main class="task-list-container">
+        <!-- Project List -->
+        <main class="project-list-container">
+            <div class="project-header">
+                <h2>Projects</h2>
+                <button id="add-project-btn" class="btn btn-start">Add Project</button>
+            </div>
+            <div id="project-list" class="project-list">
+                <!-- Projects will be populated here -->
+            </div>
+        </main>
+
+        <!-- Task List (shown when inside a project) -->
+        <main class="task-list-container hidden" id="task-view">
+            <div class="task-header">
+                <button id="back-to-projects-btn" class="btn btn-start">← Back to Projects</button>
+                <h2 id="current-project-name">Project Tasks</h2>
+                <button id="add-task-btn-project" class="btn btn-start">Add Task</button>
+            </div>
             <div id="task-list" class="task-list">
                 <!-- Tasks will be populated here -->
             </div>
@@ -107,6 +123,52 @@
                 <div class="modal-footer">
                     <button type="button" id="cancel-subtask-btn" class="btn">Cancel</button>
                     <button type="submit" class="btn btn-start">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Project Modal -->
+    <div id="add-project-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Project</h2>
+                <button id="close-project-modal-btn" class="btn btn-flat">×</button>
+            </div>
+            <form id="add-project-form" class="modal-body">
+                <div class="form-group">
+                    <label for="project-name">Project Name:</label>
+                    <input type="text" id="project-name" class="form-input" placeholder="Enter project name..." required>
+                </div>
+                <div class="form-group">
+                    <label for="project-description">Description:</label>
+                    <textarea id="project-description" class="form-input" placeholder="Enter project description..." rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="project-priority">Priority:</label>
+                    <select id="project-priority" class="form-input">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="project-color">Color:</label>
+                    <div class="color-picker">
+                        <input type="color" id="project-color" class="color-input" value="#81a1c1">
+                        <div class="color-presets">
+                            <button type="button" class="color-preset" data-color="#81a1c1" style="background-color: #81a1c1;" title="Nordic Blue"></button>
+                            <button type="button" class="color-preset" data-color="#a3be8c" style="background-color: #a3be8c;" title="Nordic Green"></button>
+                            <button type="button" class="color-preset" data-color="#ebcb8b" style="background-color: #ebcb8b;" title="Nordic Yellow"></button>
+                            <button type="button" class="color-preset" data-color="#bf616a" style="background-color: #bf616a;" title="Nordic Red"></button>
+                            <button type="button" class="color-preset" data-color="#b48ead" style="background-color: #b48ead;" title="Nordic Purple"></button>
+                            <button type="button" class="color-preset" data-color="#88c0d0" style="background-color: #88c0d0;" title="Nordic Cyan"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-project-btn" class="btn">Cancel</button>
+                    <button type="submit" class="btn btn-start">Create Project</button>
                 </div>
             </form>
         </div>

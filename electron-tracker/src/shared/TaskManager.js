@@ -3,19 +3,24 @@ const path = require('path');
 const os = require('os');
 const { Task, TaskStatus } = require('./Task');
 const { Workspace } = require('./Workspace');
+const { Project, ProjectStatus } = require('./Project');
 
 class TaskManager {
     constructor(dataFile = null) {
         this.tasks = new Map();
+        this.projects = new Map();
         this.workspaces = new Map();
         this.currentWorkspaceId = null;
+        this.currentProjectId = null;
         this.dataFile = dataFile || path.join(os.homedir(), '.tracker_tasks.json');
+        this.projectsFile = dataFile ? dataFile.replace('.json', '_projects.json') : path.join(os.homedir(), '.tracker_projects.json');
         this.workspacesFile = dataFile ? dataFile.replace('.json', '_workspaces.json') : path.join(os.homedir(), '.tracker_workspaces.json');
         this.currentTask = null;
     }
 
     async initialize() {
         await this.loadWorkspaces();
+        await this.loadProjects();
         await this.loadTasks();
         
         // Create default workspaces if none exist
@@ -29,11 +34,22 @@ class TaskManager {
         }
     }
 
-    createTask(title, description = '', workspaceId = null) {
+    createTask(title, description = '', projectId = null) {
         const task = new Task(title, description);
-        task.workspaceId = workspaceId || this.currentWorkspaceId;
+        task.workspaceId = this.currentWorkspaceId;
+        task.projectId = projectId || this.currentProjectId;
         this.tasks.set(task.id, task);
         task.subdivide();
+        
+        // Add task to project if specified
+        if (task.projectId) {
+            const project = this.projects.get(task.projectId);
+            if (project) {
+                project.addTask(task.id);
+                this.saveProjects();
+            }
+        }
+        
         this.saveTasks();
         return task;
     }
@@ -42,10 +58,18 @@ class TaskManager {
         return this.tasks.get(taskId) || null;
     }
 
-    getAllTasks(workspaceId = null) {
-        const targetWorkspace = workspaceId || this.currentWorkspaceId;
+    getAllTasks(projectId = null) {
+        const targetProject = projectId || this.currentProjectId;
+        if (!targetProject) return [];
+        
         return Array.from(this.tasks.values()).filter(task => 
-            task.parentId === null && task.workspaceId === targetWorkspace
+            task.parentId === null && task.projectId === targetProject
+        );
+    }
+
+    getTasksByProject(projectId) {
+        return Array.from(this.tasks.values()).filter(task => 
+            task.projectId === projectId
         );
     }
 
@@ -200,6 +224,111 @@ class TaskManager {
         }
     }
 
+    // Project management methods
+    createProject(name, description = '', workspaceId = null) {
+        const project = new Project(name, description, workspaceId || this.currentWorkspaceId);
+        this.projects.set(project.id, project);
+        this.saveProjects();
+        return project;
+    }
+
+    getProject(projectId) {
+        return this.projects.get(projectId) || null;
+    }
+
+    getAllProjects(workspaceId = null) {
+        const targetWorkspace = workspaceId || this.currentWorkspaceId;
+        return Array.from(this.projects.values()).filter(project => 
+            project.workspaceId === targetWorkspace
+        );
+    }
+
+    deleteProject(projectId) {
+        const project = this.projects.get(projectId);
+        if (!project) return false;
+
+        // Delete all tasks in this project
+        const tasksToDelete = Array.from(this.tasks.values()).filter(task => task.projectId === projectId);
+        for (const task of tasksToDelete) {
+            this.deleteTask(task.id);
+        }
+
+        this.projects.delete(projectId);
+        
+        // Switch to another project if current was deleted
+        if (this.currentProjectId === projectId) {
+            const remainingProjects = this.getAllProjects();
+            this.currentProjectId = remainingProjects.length > 0 ? remainingProjects[0].id : null;
+        }
+
+        this.saveProjects();
+        return true;
+    }
+
+    switchProject(projectId) {
+        if (this.projects.has(projectId)) {
+            this.currentProjectId = projectId;
+            // Pause current task when switching projects
+            if (this.currentTask) {
+                this.currentTask.pause();
+                this.currentTask = null;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    getCurrentProject() {
+        return this.projects.get(this.currentProjectId);
+    }
+
+    updateProjectProgress(projectId) {
+        const project = this.projects.get(projectId);
+        if (!project) return;
+
+        const projectTasks = this.getTasksByProject(projectId);
+        const completedTasks = projectTasks.filter(task => task.status === TaskStatus.COMPLETED).length;
+        
+        project.updateProgress(completedTasks, projectTasks.length);
+        this.saveProjects();
+    }
+
+    async saveProjects() {
+        try {
+            const data = {};
+            for (const [projectId, project] of this.projects) {
+                data[projectId] = project.toJSON();
+            }
+            const projectData = {
+                projects: data,
+                currentProjectId: this.currentProjectId
+            };
+            await fs.writeFile(this.projectsFile, JSON.stringify(projectData, null, 2));
+        } catch (error) {
+            console.error('Error saving projects:', error);
+        }
+    }
+
+    async loadProjects() {
+        try {
+            const fileExists = await fs.access(this.projectsFile).then(() => true).catch(() => false);
+            if (fileExists) {
+                const data = await fs.readFile(this.projectsFile, 'utf8');
+                const projectData = JSON.parse(data);
+                
+                this.projects.clear();
+                for (const [projectId, projData] of Object.entries(projectData.projects || {})) {
+                    const project = Project.fromJSON(projData);
+                    this.projects.set(projectId, project);
+                }
+                
+                this.currentProjectId = projectData.currentProjectId;
+            }
+        } catch (error) {
+            console.error('Error loading projects:', error);
+        }
+    }
+
     // Workspace management methods
     async createDefaultWorkspaces() {
         const workWorkspace = new Workspace('Work', '#81a1c1');
@@ -211,6 +340,26 @@ class TaskManager {
         this.currentWorkspaceId = workWorkspace.id;
         
         await this.saveWorkspaces();
+        
+        // Create default projects for each workspace
+        await this.createDefaultProjects();
+    }
+
+    async createDefaultProjects() {
+        // Create default projects for Work workspace
+        const workWorkspace = Array.from(this.workspaces.values()).find(ws => ws.name === 'Work');
+        if (workWorkspace) {
+            const workProject = this.createProject('General Tasks', 'Default project for work tasks', workWorkspace.id);
+            if (!this.currentProjectId) {
+                this.currentProjectId = workProject.id;
+            }
+        }
+
+        // Create default projects for Personal workspace
+        const personalWorkspace = Array.from(this.workspaces.values()).find(ws => ws.name === 'Personal');
+        if (personalWorkspace) {
+            this.createProject('Personal Tasks', 'Default project for personal tasks', personalWorkspace.id);
+        }
     }
 
     createWorkspace(name, color = '#81a1c1') {
@@ -248,6 +397,11 @@ class TaskManager {
     switchWorkspace(workspaceId) {
         if (this.workspaces.has(workspaceId)) {
             this.currentWorkspaceId = workspaceId;
+            
+            // Switch to first project in the new workspace
+            const workspaceProjects = this.getAllProjects(workspaceId);
+            this.currentProjectId = workspaceProjects.length > 0 ? workspaceProjects[0].id : null;
+            
             // Pause current task when switching workspaces
             if (this.currentTask) {
                 this.currentTask.pause();

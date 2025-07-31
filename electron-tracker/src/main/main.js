@@ -256,6 +256,7 @@ class TrakerApp {
                 const success = this.taskManager.switchWorkspace(workspaceId);
                 if (success) {
                     this.notifyWorkspacesUpdated();
+                    this.notifyProjectsUpdated();
                     this.notifyTasksUpdated();
                 }
                 return success;
@@ -270,11 +271,70 @@ class TrakerApp {
                 const success = this.taskManager.deleteWorkspace(workspaceId);
                 if (success) {
                     this.notifyWorkspacesUpdated();
+                    this.notifyProjectsUpdated();
                     this.notifyTasksUpdated();
                 }
                 return success;
             } catch (error) {
                 console.error('Error deleting workspace:', error);
+                throw error;
+            }
+        });
+
+        // Project Management IPC handlers
+        ipcMain.handle('get-all-projects', async () => {
+            try {
+                return this.taskManager.getAllProjects();
+            } catch (error) {
+                console.error('Error getting projects:', error);
+                throw error;
+            }
+        });
+
+        ipcMain.handle('get-current-project', async () => {
+            try {
+                return this.taskManager.getCurrentProject();
+            } catch (error) {
+                console.error('Error getting current project:', error);
+                throw error;
+            }
+        });
+
+        ipcMain.handle('create-project', async (event, name, description) => {
+            try {
+                const project = this.taskManager.createProject(name, description);
+                this.notifyProjectsUpdated();
+                return project;
+            } catch (error) {
+                console.error('Error creating project:', error);
+                throw error;
+            }
+        });
+
+        ipcMain.handle('switch-project', async (event, projectId) => {
+            try {
+                const success = this.taskManager.switchProject(projectId);
+                if (success) {
+                    this.notifyProjectsUpdated();
+                    this.notifyTasksUpdated();
+                }
+                return success;
+            } catch (error) {
+                console.error('Error switching project:', error);
+                throw error;
+            }
+        });
+
+        ipcMain.handle('delete-project', async (event, projectId) => {
+            try {
+                const success = this.taskManager.deleteProject(projectId);
+                if (success) {
+                    this.notifyProjectsUpdated();
+                    this.notifyTasksUpdated();
+                }
+                return success;
+            } catch (error) {
+                console.error('Error deleting project:', error);
                 throw error;
             }
         });
@@ -327,6 +387,14 @@ class TrakerApp {
             const workspaces = this.taskManager.getAllWorkspaces();
             const currentWorkspace = this.taskManager.getCurrentWorkspace();
             this.mainWindow.webContents.send('workspaces-updated', workspaces, currentWorkspace);
+        }
+    }
+
+    notifyProjectsUpdated() {
+        if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+            const projects = this.taskManager.getAllProjects();
+            const currentProject = this.taskManager.getCurrentProject();
+            this.mainWindow.webContents.send('projects-updated', projects, currentProject);
         }
     }
 

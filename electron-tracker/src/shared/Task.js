@@ -22,6 +22,7 @@ class Task {
         this.description = description;
         this.parentId = parentId;
         this.workspaceId = null; // Will be set by TaskManager
+        this.projectId = null; // Will be set by TaskManager
         this.status = TaskStatus.PENDING;
         this.taskType = parentId === null ? TaskType.MAIN : TaskType.SUBTASK;
         this.createdAt = new Date();
@@ -159,6 +160,7 @@ class Task {
             description: this.description,
             parentId: this.parentId,
             workspaceId: this.workspaceId,
+            projectId: this.projectId,
             status: this.status,
             taskType: this.taskType,
             createdAt: this.createdAt.toISOString(),
@@ -180,6 +182,7 @@ class Task {
         const task = new Task(data.title, data.description, data.parentId);
         task.id = data.id;
         task.workspaceId = data.workspaceId;
+        task.projectId = data.projectId;
         task.status = data.status;
         task.taskType = data.taskType;
         task.createdAt = new Date(data.createdAt);
