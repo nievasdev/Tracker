@@ -4,9 +4,12 @@ const { ipcRenderer } = require('electron');
 class TrakerUI {
     constructor() {
         this.tasks = [];
+        this.projects = [];
         this.workspaces = [];
         this.currentWorkspace = null;
+        this.currentProject = null;
         this.currentTask = null;
+        this.currentView = 'projects'; // 'projects' or 'tasks'
         this.timerState = {
             running: false,
             timeRemaining: 0,
@@ -18,13 +21,24 @@ class TrakerUI {
         this.initializeElements();
         this.attachEventListeners();
         this.loadWorkspaces();
-        this.loadTasks();
+        this.loadProjects();
     }
 
     initializeElements() {
         // Header elements
         this.addTaskBtn = document.getElementById('add-task-btn');
         this.refreshBtn = document.getElementById('refresh-btn');
+
+        // Project elements
+        this.projectListContainer = document.querySelector('.project-list-container');
+        this.projectList = document.getElementById('project-list');
+        this.addProjectBtn = document.getElementById('add-project-btn');
+        
+        // Task view elements
+        this.taskView = document.getElementById('task-view');
+        this.backToProjectsBtn = document.getElementById('back-to-projects-btn');
+        this.currentProjectName = document.getElementById('current-project-name');
+        this.addTaskBtnProject = document.getElementById('add-task-btn-project');
 
         // Workspace elements
         this.workspaceTabsContainer = document.getElementById('workspace-tabs-container');
@@ -49,19 +63,26 @@ class TrakerUI {
         // Modals
         this.addTaskModal = document.getElementById('add-task-modal');
         this.addSubtaskModal = document.getElementById('add-subtask-modal');
+        this.addProjectModal = document.getElementById('add-project-modal');
         this.addWorkspaceModal = document.getElementById('add-workspace-modal');
         this.closeModalBtn = document.getElementById('close-modal-btn');
         this.closeSubtaskModalBtn = document.getElementById('close-subtask-modal-btn');
+        this.closeProjectModalBtn = document.getElementById('close-project-modal-btn');
         this.closeWorkspaceModalBtn = document.getElementById('close-workspace-modal-btn');
 
         // Forms
         this.addTaskForm = document.getElementById('add-task-form');
         this.addSubtaskForm = document.getElementById('add-subtask-form');
+        this.addProjectForm = document.getElementById('add-project-form');
         this.addWorkspaceForm = document.getElementById('add-workspace-form');
         this.taskTitle = document.getElementById('task-title');
         this.taskDescription = document.getElementById('task-description');
         this.subtaskTitle = document.getElementById('subtask-title');
         this.subtaskDuration = document.getElementById('subtask-duration');
+        this.projectName = document.getElementById('project-name');
+        this.projectDescription = document.getElementById('project-description');
+        this.projectPriority = document.getElementById('project-priority');
+        this.projectColor = document.getElementById('project-color');
         this.workspaceName = document.getElementById('workspace-name');
         this.workspaceColor = document.getElementById('workspace-color');
 
@@ -70,9 +91,14 @@ class TrakerUI {
     }
 
     attachEventListeners() {
-        // Header actions
+        // Header actions - Add Task only visible in task view
         this.addTaskBtn.addEventListener('click', () => this.showAddTaskModal());
-        this.refreshBtn.addEventListener('click', () => this.loadTasks());
+        this.refreshBtn.addEventListener('click', () => this.refreshCurrentView());
+
+        // Project actions
+        this.addProjectBtn.addEventListener('click', () => this.showAddProjectModal());
+        this.addTaskBtnProject.addEventListener('click', () => this.showAddTaskModal());
+        this.backToProjectsBtn.addEventListener('click', () => this.showProjectsView());
 
         // Workspace actions
         this.addWorkspaceBtn.addEventListener('click', () => this.showAddWorkspaceModal());
@@ -91,14 +117,17 @@ class TrakerUI {
         // Modal controls
         this.closeModalBtn.addEventListener('click', () => this.hideAddTaskModal());
         this.closeSubtaskModalBtn.addEventListener('click', () => this.hideAddSubtaskModal());
+        this.closeProjectModalBtn.addEventListener('click', () => this.hideAddProjectModal());
         this.closeWorkspaceModalBtn.addEventListener('click', () => this.hideAddWorkspaceModal());
         document.getElementById('cancel-task-btn').addEventListener('click', () => this.hideAddTaskModal());
         document.getElementById('cancel-subtask-btn').addEventListener('click', () => this.hideAddSubtaskModal());
+        document.getElementById('cancel-project-btn').addEventListener('click', () => this.hideAddProjectModal());
         document.getElementById('cancel-workspace-btn').addEventListener('click', () => this.hideAddWorkspaceModal());
 
         // Form submissions
         this.addTaskForm.addEventListener('submit', (e) => this.handleAddTask(e));
         this.addSubtaskForm.addEventListener('submit', (e) => this.handleAddSubtask(e));
+        this.addProjectForm.addEventListener('submit', (e) => this.handleAddProject(e));
         this.addWorkspaceForm.addEventListener('submit', (e) => this.handleAddWorkspace(e));
 
         // Close modals on outside click
@@ -108,18 +137,28 @@ class TrakerUI {
         this.addSubtaskModal.addEventListener('click', (e) => {
             if (e.target === this.addSubtaskModal) this.hideAddSubtaskModal();
         });
+        this.addProjectModal.addEventListener('click', (e) => {
+            if (e.target === this.addProjectModal) this.hideAddProjectModal();
+        });
         this.addWorkspaceModal.addEventListener('click', (e) => {
             if (e.target === this.addWorkspaceModal) this.hideAddWorkspaceModal();
         });
 
-        // Color preset handling
+        // Color preset handling for both project and workspace modals
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('color-preset')) {
                 const color = e.target.dataset.color;
-                this.workspaceColor.value = color;
                 
-                // Update selected state
-                document.querySelectorAll('.color-preset').forEach(preset => {
+                // Determine which modal is open and update the correct color picker
+                if (!this.addProjectModal.classList.contains('hidden')) {
+                    this.projectColor.value = color;
+                } else if (!this.addWorkspaceModal.classList.contains('hidden')) {
+                    this.workspaceColor.value = color;
+                }
+                
+                // Update selected state within the current modal
+                const modal = e.target.closest('.modal');
+                modal.querySelectorAll('.color-preset').forEach(preset => {
                     preset.classList.remove('selected');
                 });
                 e.target.classList.add('selected');
@@ -140,6 +179,181 @@ class TrakerUI {
             this.workspaces = workspaces;
             this.currentWorkspace = currentWorkspace;
             this.renderWorkspaceTabs();
+        });
+
+        ipcRenderer.on('projects-updated', (event, projects, currentProject) => {
+            this.projects = projects;
+            this.currentProject = currentProject;
+            this.renderProjects();
+        });
+    }
+
+    // Project Management
+    async loadProjects() {
+        try {
+            const projects = await ipcRenderer.invoke('get-all-projects');
+            const currentProject = await ipcRenderer.invoke('get-current-project');
+            this.projects = projects;
+            this.currentProject = currentProject;
+            this.renderProjects();
+        } catch (error) {
+            this.showNotification('Error loading projects', 'error');
+            console.error('Error loading projects:', error);
+        }
+    }
+
+    async handleAddProject(e) {
+        e.preventDefault();
+        const name = this.projectName.value.trim();
+        const description = this.projectDescription.value.trim();
+        const priority = this.projectPriority.value;
+        const color = this.projectColor.value;
+
+        if (!name) return;
+
+        try {
+            await ipcRenderer.invoke('create-project', name, description, priority, color);
+            this.hideAddProjectModal();
+            this.addProjectForm.reset();
+            this.showNotification('Project created successfully', 'success');
+        } catch (error) {
+            this.showNotification('Error creating project', 'error');
+            console.error('Error creating project:', error);
+        }
+    }
+
+    async switchToProject(projectId) {
+        try {
+            await ipcRenderer.invoke('switch-project', projectId);
+            this.showTasksView();
+            this.loadTasks();
+            this.showNotification('Switched to project', 'success');
+        } catch (error) {
+            this.showNotification('Error switching project', 'error');
+            console.error('Error switching project:', error);
+        }
+    }
+
+    async deleteProject(projectId) {
+        if (confirm('Are you sure you want to delete this project? All tasks in it will be deleted.')) {
+            try {
+                await ipcRenderer.invoke('delete-project', projectId);
+                this.showNotification('Project deleted', 'info');
+            } catch (error) {
+                this.showNotification('Error deleting project', 'error');
+                console.error('Error deleting project:', error);
+            }
+        }
+    }
+
+    renderProjects() {
+        this.projectList.innerHTML = '';
+
+        if (this.projects.length === 0) {
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-state';
+            emptyState.innerHTML = `
+                <p>No projects yet. Create your first project to get started!</p>
+            `;
+            this.projectList.appendChild(emptyState);
+            return;
+        }
+
+        this.projects.forEach(project => {
+            const projectCard = this.createProjectCard(project);
+            this.projectList.appendChild(projectCard);
+        });
+    }
+
+    createProjectCard(project) {
+        const card = document.createElement('div');
+        card.className = `project-card ${project.id === this.currentProject?.id ? 'active' : ''}`;
+        card.addEventListener('click', () => this.switchToProject(project.id));
+
+        // Calculate task count and progress
+        const tasks = this.tasks.filter(task => task.projectId === project.id);
+        const completedTasks = tasks.filter(task => task.status === 'completed');
+        const progress = tasks.length > 0 ? (completedTasks.length / tasks.length) * 100 : 0;
+
+        card.innerHTML = `
+            <div class="project-card-header">
+                <div class="project-color-indicator" style="background-color: ${project.color}"></div>
+                <div class="project-actions">
+                    <button class="btn btn-flat btn-delete" onclick="event.stopPropagation(); this.deleteProject('${project.id}')" title="Delete Project">×</button>
+                </div>
+            </div>
+            <h3 class="project-name">${project.name}</h3>
+            <p class="project-description">${project.description || 'No description'}</p>
+            <div class="project-meta">
+                <span class="project-priority ${project.priority}">${project.priority.toUpperCase()}</span>
+                <div class="project-progress">
+                    <div class="project-progress-bar">
+                        <div class="project-progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <span>${Math.round(progress)}%</span>
+                </div>
+            </div>
+            <div class="project-task-count">${tasks.length} tasks</div>
+        `;
+
+        // Re-attach delete handler properly
+        const deleteBtn = card.querySelector('.btn-delete');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.deleteProject(project.id);
+        });
+
+        return card;
+    }
+
+    showProjectsView() {
+        this.currentView = 'projects';
+        this.projectListContainer.classList.remove('hidden');
+        this.taskView.classList.add('hidden');
+        this.addTaskBtn.classList.add('hidden');
+        this.renderProjects();
+    }
+
+    showTasksView() {
+        this.currentView = 'tasks';
+        this.projectListContainer.classList.add('hidden');
+        this.taskView.classList.remove('hidden');
+        this.addTaskBtn.classList.remove('hidden');
+        
+        if (this.currentProject) {
+            this.currentProjectName.textContent = this.currentProject.name;
+        }
+        this.renderTasks();
+    }
+
+    refreshCurrentView() {
+        if (this.currentView === 'projects') {
+            this.loadProjects();
+        } else {
+            this.loadTasks();
+        }
+    }
+
+    showAddProjectModal() {
+        this.addProjectModal.classList.remove('hidden');
+        this.projectName.focus();
+        
+        // Reset color presets selection
+        const modal = this.addProjectModal;
+        modal.querySelectorAll('.color-preset').forEach(preset => {
+            preset.classList.remove('selected');
+        });
+        modal.querySelector('.color-preset[data-color="#81a1c1"]')?.classList.add('selected');
+    }
+
+    hideAddProjectModal() {
+        this.addProjectModal.classList.add('hidden');
+        this.addProjectForm.reset();
+        
+        // Reset color presets selection
+        const modal = this.addProjectModal;
+        modal.querySelectorAll('.color-preset').forEach(preset => {
+            preset.classList.remove('selected');
         });
     }
 

@@ -300,9 +300,9 @@ class TrakerApp {
             }
         });
 
-        ipcMain.handle('create-project', async (event, name, description) => {
+        ipcMain.handle('create-project', async (event, name, description, priority, color) => {
             try {
-                const project = this.taskManager.createProject(name, description);
+                const project = this.taskManager.createProject(name, description, priority, color);
                 this.notifyProjectsUpdated();
                 return project;
             } catch (error) {

@@ -225,8 +225,10 @@ class TaskManager {
     }
 
     // Project management methods
-    createProject(name, description = '', workspaceId = null) {
+    createProject(name, description = '', priority = 'medium', color = '#81a1c1', workspaceId = null) {
         const project = new Project(name, description, workspaceId || this.currentWorkspaceId);
+        project.priority = priority;
+        project.color = color;
         this.projects.set(project.id, project);
         this.saveProjects();
         return project;

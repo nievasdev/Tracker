@@ -797,6 +797,19 @@ body {
     }
 }
 
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--fg-alt-color);
+    grid-column: 1 / -1;
+}
+
+.empty-state p {
+    font-size: var(--font-size-lg);
+    margin: 0;
+}
+
 /* Utility Classes */
 .hidden {
     display: none !important;
