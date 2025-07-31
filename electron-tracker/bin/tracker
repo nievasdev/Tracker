@@ -1,0 +1,81 @@
+#!/usr/bin/env node
+
+const { spawn } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
+
+// Get the application directory
+const appDir = path.join(__dirname, '..');
+const electronPath = path.join(appDir, 'node_modules', '.bin', 'electron');
+const mainPath = path.join(appDir, 'src', 'main', 'main.js');
+
+// Check if we're in development or production
+const isDev = process.argv.includes('--dev') || !fs.existsSync(path.join(appDir, 'dist'));
+
+function runElectron() {
+    const args = [mainPath];
+    
+    // Add development flag if needed
+    if (isDev) {
+        args.push('--dev');
+    }
+    
+    // Pass through any additional arguments
+    const additionalArgs = process.argv.slice(2).filter(arg => arg !== '--dev');
+    args.push(...additionalArgs);
+
+    const electronProcess = spawn(electronPath, args, {
+        cwd: appDir,
+        stdio: 'inherit',
+        detached: false,
+        env: {
+            ...process.env,
+            ELECTRON_DISABLE_SANDBOX: '1'
+        }
+    });
+
+    electronProcess.on('error', (error) => {
+        console.error('Failed to start Tracker:', error.message);
+        if (error.code === 'ENOENT') {
+            console.error('Make sure Electron is installed. Run: npm install');
+        }
+        process.exit(1);
+    });
+
+    electronProcess.on('close', (code) => {
+        process.exit(code);
+    });
+
+    // Handle SIGINT and SIGTERM
+    process.on('SIGINT', () => {
+        electronProcess.kill('SIGINT');
+    });
+
+    process.on('SIGTERM', () => {
+        electronProcess.kill('SIGTERM');
+    });
+}
+
+// Check if dependencies are installed
+if (!fs.existsSync(electronPath)) {
+    console.error('Electron not found. Installing dependencies...');
+    const { spawn } = require('child_process');
+    
+    const npmInstall = spawn('npm', ['install'], {
+        cwd: appDir,
+        stdio: 'inherit'
+    });
+    
+    npmInstall.on('close', (code) => {
+        if (code === 0) {
+            console.log('Dependencies installed successfully.');
+            runElectron();
+        } else {
+            console.error('Failed to install dependencies.');
+            process.exit(1);
+        }
+    });
+} else {
+    runElectron();
+}

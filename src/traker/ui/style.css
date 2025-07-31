@@ -1,28 +1,11 @@
-/* Nordic Dark Theme for Traker - Complete Coverage */
+/* Nordic Dark Theme for Traker - GTK CSS Compatible */
 /* Based on the polybar configuration colors */
-
-/* ==== COLOR VARIABLES ==== */
-@define-color bg_color #2e3440;
-@define-color bg_alt_color #3b4252;
-@define-color bg_accent_color #434c5e;
-@define-color fg_color #eceff4;
-@define-color fg_alt_color #d8dee9;
-@define-color selection_bg_color #4c566a;
-@define-color selection_fg_color #88c0d0;
-@define-color primary_color #81a1c1;
-@define-color alert_color #bf616a;
-@define-color alert_alt_color #d08770;
-@define-color success_color #a3be8c;
-@define-color warning_color #ebcb8b;
-@define-color info_color #88c0d0;
-@define-color nordic_cyan #8fbcbb;
-@define-color nordic_purple #b48ead;
 
 /* ==== UNIVERSAL RULES - FORCE ALL WIDGETS ==== */
 * {
-    background-color: @bg_color;
-    color: @fg_color;
-    outline-color: @primary_color;
+    background-color: #2e3440;
+    color: #eceff4;
+    outline-color: #81a1c1;
     outline-style: solid;
     outline-width: 0px;
 }
@@ -31,8 +14,8 @@
 window,
 applicationwindow,
 dialog {
-    background-color: @bg_color;
-    color: @fg_color;
+    background-color: #2e3440;
+    color: #eceff4;
 }
 
 /* ==== CONTAINERS ==== */
@@ -46,95 +29,95 @@ revealer,
 stack,
 stackswitcher {
     background-color: transparent;
-    color: @fg_color;
+    color: #eceff4;
 }
 
 /* Specific container backgrounds */
 .background {
-    background-color: @bg_color;
+    background-color: #2e3440;
 }
 
 .background-alt {
-    background-color: @bg_alt_color;
+    background-color: #3b4252;
 }
 
 .background-accent {
-    background-color: @bg_accent_color;
+    background-color: #434c5e;
 }
 
 /* ==== BUTTONS - COMPLETE OVERRIDE ==== */
 button {
-    background-color: @bg_accent_color !important;
-    color: @fg_color !important;
-    border: 1px solid @selection_bg_color !important;
-    border-radius: 4px !important;
-    padding: 8px 12px !important;
-    margin: 2px !important;
-    outline: none !important;
+    background-color: #434c5e;
+    color: #eceff4;
+    border: 1px solid #4c566a;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 2px;
+    outline: none;
 }
 
 button:hover {
-    background-color: @selection_bg_color !important;
-    color: @selection_fg_color !important;
+    background-color: #4c566a;
+    color: #88c0d0;
 }
 
 button:active,
 button:checked {
-    background-color: @primary_color !important;
-    color: @bg_color !important;
+    background-color: #81a1c1;
+    color: #2e3440;
 }
 
 button:disabled {
-    background-color: @bg_alt_color !important;
-    color: @fg_alt_color !important;
+    background-color: #3b4252;
+    color: #d8dee9;
     opacity: 0.5;
 }
 
 /* Button specific styles */
 button.start-button {
-    background-color: @success_color !important;
-    color: @bg_color !important;
+    background-color: #a3be8c;
+    color: #2e3440;
 }
 
 button.start-button:hover {
-    background-color: @info_color !important;
-    color: @bg_color !important;
+    background-color: #88c0d0;
+    color: #2e3440;
 }
 
 button.pause-button {
-    background-color: @warning_color !important;
-    color: @bg_color !important;
+    background-color: #ebcb8b;
+    color: #2e3440;
 }
 
 button.pause-button:hover {
-    background-color: @alert_alt_color !important;
-    color: @bg_color !important;
+    background-color: #d08770;
+    color: #2e3440;
 }
 
 button.complete-button {
-    background-color: @success_color !important;
-    color: @bg_color !important;
+    background-color: #a3be8c;
+    color: #2e3440;
 }
 
 button.delete-button {
-    background-color: @alert_color !important;
-    color: @fg_color !important;
+    background-color: #bf616a;
+    color: #eceff4;
 }
 
 button.delete-button:hover {
-    background-color: @alert_alt_color !important;
-    color: @fg_color !important;
+    background-color: #d08770;
+    color: #eceff4;
 }
 
 button.flat {
-    background-color: transparent !important;
-    border: none !important;
-    color: @fg_color !important;
+    background-color: transparent;
+    border: none;
+    color: #eceff4;
 }
 
 button.flat:hover {
-    background-color: @bg_accent_color !important;
-    color: @selection_fg_color !important;
+    background-color: #434c5e;
+    color: #88c0d0;
 }
 
 /* ==== TEXT INPUTS ==== */
@@ -142,62 +125,62 @@ entry,
 text,
 textview,
 textview text {
-    background-color: @bg_alt_color !important;
-    color: @fg_color !important;
-    border: 1px solid @selection_bg_color !important;
-    border-radius: 4px !important;
-    padding: 8px !important;
-    caret-color: @selection_fg_color !important;
-    selection-background-color: @selection_bg_color !important;
-    selection-color: @selection_fg_color !important;
+    background-color: #3b4252;
+    color: #eceff4;
+    border: 1px solid #4c566a;
+    border-radius: 4px;
+    padding: 8px;
+    caret-color: #88c0d0;
+    selection-background-color: #4c566a;
+    selection-color: #88c0d0;
 }
 
 entry:focus,
 textview:focus,
 textview text:focus {
-    border-color: @primary_color !important;
-    background-color: @bg_accent_color !important;
-    outline: none !important;
+    border-color: #81a1c1;
+    background-color: #434c5e;
+    outline: none;
 }
 
 entry placeholder {
-    color: @fg_alt_color !important;
+    color: #d8dee9;
 }
 
 /* ==== LABELS ==== */
 label {
-    color: @fg_color !important;
-    background-color: transparent !important;
+    color: #eceff4;
+    background-color: transparent;
 }
 
 label.title {
-    color: @selection_fg_color !important;
+    color: #88c0d0;
     font-weight: bold;
 }
 
 label.status {
-    color: @fg_alt_color !important;
+    color: #d8dee9;
 }
 
 label.description {
-    color: @fg_alt_color !important;
+    color: #d8dee9;
 }
 
 /* Status-specific colors */
 .status-pending {
-    color: @warning_color !important;
+    color: #ebcb8b;
 }
 
 .status-in-progress {
-    color: @info_color !important;
+    color: #88c0d0;
 }
 
 .status-paused {
-    color: @nordic_purple !important;
+    color: #b48ead;
 }
 
 .status-completed {
-    color: @success_color !important;
+    color: #a3be8c;
 }
 
 /* ==== LIST WIDGETS ==== */
@@ -205,122 +188,122 @@ listbox,
 listboxrow,
 list,
 row {
-    background-color: @bg_color !important;
-    color: @fg_color !important;
-    border-color: @selection_bg_color !important;
+    background-color: #2e3440;
+    color: #eceff4;
+    border-color: #4c566a;
 }
 
 listboxrow {
-    background-color: @bg_alt_color !important;
-    border-bottom: 1px solid @bg_accent_color !important;
-    padding: 8px !important;
+    background-color: #3b4252;
+    border-bottom: 1px solid #434c5e;
+    padding: 8px;
 }
 
 listboxrow:hover {
-    background-color: @bg_accent_color !important;
+    background-color: #434c5e;
 }
 
 listboxrow:selected {
-    background-color: @selection_bg_color !important;
-    color: @selection_fg_color !important;
+    background-color: #4c566a;
+    color: #88c0d0;
 }
 
 /* ==== FRAMES ==== */
 frame,
 frame > border {
-    border: 1px solid @selection_bg_color !important;
-    border-radius: 6px !important;
-    background-color: @bg_alt_color !important;
+    border: 1px solid #4c566a;
+    border-radius: 6px;
+    background-color: #3b4252;
 }
 
 frame > label {
-    color: @selection_fg_color !important;
+    color: #88c0d0;
     font-weight: bold;
     padding: 0 8px;
-    background-color: @bg_alt_color !important;
+    background-color: #3b4252;
 }
 
 /* ==== SCROLLBARS ==== */
 scrollbar {
-    background-color: @bg_alt_color !important;
-    border: none !important;
+    background-color: #3b4252;
+    border: none;
 }
 
 scrollbar slider {
-    background-color: @selection_bg_color !important;
-    border-radius: 4px !important;
-    border: none !important;
+    background-color: #4c566a;
+    border-radius: 4px;
+    border: none;
 }
 
 scrollbar slider:hover {
-    background-color: @primary_color !important;
+    background-color: #81a1c1;
 }
 
 scrollbar button {
-    background-color: @bg_accent_color !important;
-    color: @fg_color !important;
-    border: none !important;
+    background-color: #434c5e;
+    color: #eceff4;
+    border: none;
 }
 
 /* ==== SPIN BUTTONS ==== */
 spinbutton {
-    background-color: @bg_alt_color !important;
-    color: @fg_color !important;
-    border: 1px solid @selection_bg_color !important;
-    border-radius: 4px !important;
+    background-color: #3b4252;
+    color: #eceff4;
+    border: 1px solid #4c566a;
+    border-radius: 4px;
 }
 
 spinbutton:focus {
-    border-color: @primary_color !important;
+    border-color: #81a1c1;
 }
 
 spinbutton button {
-    background-color: @bg_accent_color !important;
-    border: none !important;
-    color: @selection_fg_color !important;
+    background-color: #434c5e;
+    border: none;
+    color: #88c0d0;
 }
 
 spinbutton button:hover {
-    background-color: @selection_bg_color !important;
+    background-color: #4c566a;
 }
 
 spinbutton entry {
-    background-color: transparent !important;
-    border: none !important;
+    background-color: transparent;
+    border: none;
 }
 
 /* ==== PROGRESS BARS ==== */
 progressbar {
-    background-color: @bg_alt_color !important;
-    border-radius: 4px !important;
-    border: 1px solid @selection_bg_color !important;
+    background-color: #3b4252;
+    border-radius: 4px;
+    border: 1px solid #4c566a;
 }
 
 progressbar progress {
-    background-color: @primary_color !important;
-    border-radius: 4px !important;
+    background-color: #81a1c1;
+    border-radius: 4px;
 }
 
 /* ==== SCALES/SLIDERS ==== */
 scale {
-    background-color: transparent !important;
+    background-color: transparent;
 }
 
 scale slider {
-    background-color: @primary_color !important;
-    border: 1px solid @selection_bg_color !important;
-    border-radius: 50% !important;
+    background-color: #81a1c1;
+    border: 1px solid #4c566a;
+    border-radius: 50%;
 }
 
 scale trough {
-    background-color: @bg_alt_color !important;
-    border-radius: 4px !important;
-    border: 1px solid @selection_bg_color !important;
+    background-color: #3b4252;
+    border-radius: 4px;
+    border: 1px solid #4c566a;
 }
 
 /* ==== SEPARATORS ==== */
 separator {
-    background-color: @selection_bg_color !important;
+    background-color: #4c566a;
     min-height: 1px;
     min-width: 1px;
 }
@@ -328,144 +311,144 @@ separator {
 /* ==== MENUS AND POPOVERS ==== */
 popover,
 menu {
-    background-color: @bg_alt_color !important;
-    color: @fg_color !important;
-    border: 1px solid @selection_bg_color !important;
-    border-radius: 6px !important;
+    background-color: #3b4252;
+    color: #eceff4;
+    border: 1px solid #4c566a;
+    border-radius: 6px;
 }
 
 menuitem,
 modelbutton {
-    background-color: transparent !important;
-    color: @fg_color !important;
-    padding: 8px 12px !important;
+    background-color: transparent;
+    color: #eceff4;
+    padding: 8px 12px;
 }
 
 menuitem:hover,
 modelbutton:hover {
-    background-color: @selection_bg_color !important;
-    color: @selection_fg_color !important;
+    background-color: #4c566a;
+    color: #88c0d0;
 }
 
 /* ==== NOTEBOOKS/TABS ==== */
 notebook {
-    background-color: @bg_color !important;
-    border: 1px solid @selection_bg_color !important;
+    background-color: #2e3440;
+    border: 1px solid #4c566a;
 }
 
 notebook tab {
-    background-color: @bg_alt_color !important;
-    color: @fg_alt_color !important;
-    border: 1px solid @selection_bg_color !important;
-    padding: 8px 12px !important;
+    background-color: #3b4252;
+    color: #d8dee9;
+    border: 1px solid #4c566a;
+    padding: 8px 12px;
 }
 
 notebook tab:checked {
-    background-color: @bg_accent_color !important;
-    color: @selection_fg_color !important;
+    background-color: #434c5e;
+    color: #88c0d0;
 }
 
 /* ==== CHECK/RADIO BUTTONS ==== */
 checkbutton,
 radiobutton {
-    color: @fg_color !important;
-    background-color: transparent !important;
+    color: #eceff4;
+    background-color: transparent;
 }
 
 checkbutton check,
 radiobutton radio {
-    background-color: @bg_alt_color !important;
-    border: 1px solid @selection_bg_color !important;
+    background-color: #3b4252;
+    border: 1px solid #4c566a;
     -gtk-icon-source: none;
 }
 
 checkbutton check:checked,
 radiobutton radio:checked {
-    background-color: @primary_color !important;
-    color: @bg_color !important;
+    background-color: #81a1c1;
+    color: #2e3440;
     -gtk-icon-source: -gtk-icontheme("object-select-symbolic");
 }
 
 /* ==== TREE/LIST VIEWS ==== */
 treeview,
 columnview {
-    background-color: @bg_color !important;
-    color: @fg_color !important;
-    border: 1px solid @selection_bg_color !important;
+    background-color: #2e3440;
+    color: #eceff4;
+    border: 1px solid #4c566a;
 }
 
 treeview:selected,
 columnview:selected {
-    background-color: @selection_bg_color !important;
-    color: @selection_fg_color !important;
+    background-color: #4c566a;
+    color: #88c0d0;
 }
 
 treeview header,
 columnview header {
-    background-color: @bg_accent_color !important;
-    color: @fg_color !important;
-    border-bottom: 1px solid @selection_bg_color !important;
+    background-color: #434c5e;
+    color: #eceff4;
+    border-bottom: 1px solid #4c566a;
 }
 
 /* ==== HEADERS ==== */
 headerbar {
-    background-color: @bg_alt_color !important;
-    color: @fg_color !important;
-    border-bottom: 1px solid @selection_bg_color !important;
+    background-color: #3b4252;
+    color: #eceff4;
+    border-bottom: 1px solid #4c566a;
 }
 
 headerbar button {
-    background-color: transparent !important;
-    border: none !important;
-    color: @selection_fg_color !important;
+    background-color: transparent;
+    border: none;
+    color: #88c0d0;
 }
 
 headerbar button:hover {
-    background-color: @bg_accent_color !important;
+    background-color: #434c5e;
 }
 
 /* ==== TOOLTIPS ==== */
 tooltip {
-    background-color: @bg_alt_color !important;
-    color: @fg_color !important;
-    border: 1px solid @selection_bg_color !important;
-    border-radius: 4px !important;
-    padding: 8px !important;
+    background-color: #3b4252;
+    color: #eceff4;
+    border: 1px solid #4c566a;
+    border-radius: 4px;
+    padding: 8px;
 }
 
 /* ==== CUSTOM CLASSES ==== */
 .timer-display {
-    color: @selection_fg_color !important;
+    color: #88c0d0;
     font-weight: bold;
     font-size: 24px;
 }
 
 .timer-display.break-time {
-    color: @success_color !important;
+    color: #a3be8c;
 }
 
 .timer-display.work-time {
-    color: @selection_fg_color !important;
+    color: #88c0d0;
 }
 
 .progress-label {
-    color: @primary_color !important;
+    color: #81a1c1;
 }
 
 .subtask-container {
-    background-color: @bg_alt_color !important;
-    border-left: 3px solid @nordic_cyan !important;
+    background-color: #3b4252;
+    border-left: 3px solid #8fbcbb;
     margin-left: 16px;
     padding-left: 8px;
 }
 
 .subtask-label {
-    color: @fg_alt_color !important;
+    color: #d8dee9;
     font-size: smaller;
 }
 
 .context-task {
-    border-left-color: @nordic_purple !important;
+    border-left-color: #b48ead;
 }
 
 /* ==== FORCE OVERRIDE FOR STUBBORN ELEMENTS ==== */
@@ -473,8 +456,8 @@ tooltip {
 .content-view,
 scrolledwindow > viewport,
 scrolledwindow > viewport > widget {
-    background-color: @bg_color !important;
-    color: @fg_color !important;
+    background-color: #2e3440;
+    color: #eceff4;
 }
 
 /* ==== DIALOG SPECIFIC ==== */
@@ -482,18 +465,19 @@ dialog,
 dialog box,
 dialog grid,
 dialog .dialog-content-area {
-    background-color: @bg_color !important;
-    color: @fg_color !important;
+    background-color: #2e3440;
+    color: #eceff4;
 }
 
-/* ==== FORCE WHITE BACKGROUNDS TO DARK ==== */
-/* This is the nuclear option - forces any remaining white backgrounds */
-[style*="background-color: white"],
-[style*="background-color: #ffffff"],
-[style*="background-color: #fff"],
-[style*="background: white"],
-[style*="background: #ffffff"],
-[style*="background: #fff"] {
-    background-color: @bg_color !important;
-    color: @fg_color !important;
+/* ==== ADDITIONAL OVERRIDES ==== */
+/* Ensure text selections are properly themed */
+*:selected {
+    background-color: #4c566a;
+    color: #88c0d0;
+}
+
+/* Override any remaining white backgrounds */
+widget {
+    background-color: #2e3440;
+    color: #eceff4;
 }

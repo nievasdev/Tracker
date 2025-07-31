@@ -1,0 +1,576 @@
+/* Nordic Dark Theme for Traker Electron */
+/* Based on the polybar configuration colors */
+
+:root {
+    /* Nordic Dark Color Palette */
+    --bg-color: #2e3440;
+    --bg-alt-color: #3b4252;
+    --bg-accent-color: #434c5e;
+    --fg-color: #eceff4;
+    --fg-alt-color: #d8dee9;
+    --selection-bg-color: #4c566a;
+    --selection-fg-color: #88c0d0;
+    --primary-color: #81a1c1;
+    --alert-color: #bf616a;
+    --alert-alt-color: #d08770;
+    --success-color: #a3be8c;
+    --warning-color: #ebcb8b;
+    --info-color: #88c0d0;
+    --nordic-cyan: #8fbcbb;
+    --nordic-purple: #b48ead;
+    
+    /* UI Constants */
+    --border-radius: 6px;
+    --border-radius-small: 4px;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+    --font-size-sm: 12px;
+    --font-size-md: 14px;
+    --font-size-lg: 16px;
+    --font-size-xl: 20px;
+    --font-size-xxl: 24px;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    font-size: var(--font-size-md);
+    line-height: 1.6;
+    overflow: hidden;
+}
+
+/* App Container */
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-color);
+}
+
+/* Header */
+.header {
+    background-color: var(--bg-alt-color);
+    border-bottom: 1px solid var(--selection-bg-color);
+    padding: var(--spacing-md) var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.app-title {
+    color: var(--info-color);
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Timer Section */
+.timer-section {
+    background-color: var(--bg-alt-color);
+    border-bottom: 1px solid var(--selection-bg-color);
+    padding: var(--spacing-lg);
+    flex-shrink: 0;
+}
+
+.timer-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--spacing-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.current-task-info,
+.timer-display-container {
+    background-color: var(--bg-accent-color);
+    border: 1px solid var(--selection-bg-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+}
+
+.current-task-info h3,
+.timer-display-container h3 {
+    color: var(--info-color);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-md);
+    font-weight: bold;
+}
+
+#current-task-title {
+    font-weight: bold;
+    margin-bottom: var(--spacing-sm);
+}
+
+#current-task-status {
+    color: var(--fg-alt-color);
+    font-size: var(--font-size-sm);
+}
+
+/* Timer Display */
+.timer-display {
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    margin: var(--spacing-lg) 0;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.timer-display.work-time {
+    color: var(--info-color);
+}
+
+.timer-display.break-time {
+    color: var(--success-color);
+}
+
+.timer-status {
+    text-align: center;
+    color: var(--fg-alt-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.custom-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.custom-timer label {
+    color: var(--fg-alt-color);
+}
+
+.custom-timer input {
+    width: 80px;
+}
+
+/* Task List */
+.task-list-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+}
+
+.task-list {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.task-item {
+    background-color: var(--bg-alt-color);
+    border: 1px solid var(--selection-bg-color);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-lg);
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+}
+
+.task-info {
+    flex: 1;
+}
+
+.task-title {
+    color: var(--info-color);
+    font-size: var(--font-size-lg);
+    font-weight: bold;
+    margin-bottom: var(--spacing-xs);
+}
+
+.task-status {
+    color: var(--fg-alt-color);
+    margin-bottom: var(--spacing-xs);
+}
+
+.task-description {
+    color: var(--fg-alt-color);
+    margin-bottom: var(--spacing-xs);
+}
+
+.task-progress {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.task-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+}
+
+/* Status Colors */
+.status-pending {
+    color: var(--warning-color);
+}
+
+.status-in-progress {
+    color: var(--info-color);
+}
+
+.status-paused {
+    color: var(--nordic-purple);
+}
+
+.status-completed {
+    color: var(--success-color);
+}
+
+/* Subtasks */
+.subtasks {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--bg-accent-color);
+}
+
+.subtasks-title {
+    color: var(--info-color);
+    font-weight: bold;
+    margin-bottom: var(--spacing-sm);
+}
+
+.subtask-item {
+    background-color: var(--bg-accent-color);
+    border-left: 3px solid var(--nordic-cyan);
+    margin: var(--spacing-sm) 0;
+    margin-left: var(--spacing-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-small);
+}
+
+.subtask-item.context-task {
+    border-left-color: var(--nordic-purple);
+}
+
+.subtask-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subtask-info {
+    color: var(--fg-alt-color);
+    font-size: var(--font-size-sm);
+}
+
+.subtask-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+/* Buttons */
+.btn {
+    background-color: var(--bg-accent-color);
+    color: var(--fg-color);
+    border: 1px solid var(--selection-bg-color);
+    border-radius: var(--border-radius-small);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background-color: var(--selection-bg-color);
+    color: var(--info-color);
+}
+
+.btn:active {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+}
+
+.btn:disabled {
+    background-color: var(--bg-alt-color);
+    color: var(--fg-alt-color);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Button Variants */
+.btn-start {
+    background-color: var(--success-color);
+    color: var(--bg-color);
+}
+
+.btn-start:hover {
+    background-color: var(--info-color);
+    color: var(--bg-color);
+}
+
+.btn-pause {
+    background-color: var(--warning-color);
+    color: var(--bg-color);
+}
+
+.btn-pause:hover {
+    background-color: var(--alert-alt-color);
+    color: var(--bg-color);
+}
+
+.btn-complete {
+    background-color: var(--success-color);
+    color: var(--bg-color);
+}
+
+.btn-delete {
+    background-color: var(--alert-color);
+    color: var(--fg-color);
+}
+
+.btn-delete:hover {
+    background-color: var(--alert-alt-color);
+    color: var(--fg-color);
+}
+
+.btn-flat {
+    background-color: transparent;
+    border: none;
+    color: var(--fg-color);
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-xs);
+}
+
+.btn-flat:hover {
+    background-color: var(--bg-accent-color);
+    color: var(--info-color);
+}
+
+/* Form Elements */
+.form-input,
+.form-textarea {
+    background-color: var(--bg-alt-color);
+    color: var(--fg-color);
+    border: 1px solid var(--selection-bg-color);
+    border-radius: var(--border-radius-small);
+    padding: var(--spacing-sm);
+    font-family: inherit;
+    font-size: var(--font-size-md);
+    width: 100%;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: var(--bg-accent-color);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: var(--fg-alt-color);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+    display: block;
+    color: var(--fg-color);
+    margin-bottom: var(--spacing-xs);
+    font-weight: bold;
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background-color: var(--bg-color);
+    border: 2px solid var(--selection-bg-color);
+    border-radius: var(--border-radius);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    background-color: var(--bg-alt-color);
+    border-bottom: 1px solid var(--selection-bg-color);
+    padding: var(--spacing-md) var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    color: var(--info-color);
+    margin: 0;
+}
+
+.modal-body {
+    padding: var(--spacing-lg);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+}
+
+/* Notifications */
+.notification-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 2000;
+}
+
+.notification {
+    background-color: var(--bg-alt-color);
+    color: var(--fg-color);
+    border: 1px solid var(--selection-bg-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
+    max-width: 300px;
+}
+
+.notification.success {
+    border-left: 4px solid var(--success-color);
+}
+
+.notification.info {
+    border-left: 4px solid var(--info-color);
+}
+
+.notification.warning {
+    border-left: 4px solid var(--warning-color);
+}
+
+.notification.error {
+    border-left: 4px solid var(--alert-color);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--bg-alt-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--selection-bg-color);
+    border-radius: var(--border-radius-small);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .timer-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .timer-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .task-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .task-actions,
+    .subtask-actions {
+        flex-wrap: wrap;
+    }
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.mb-sm {
+    margin-bottom: var(--spacing-sm);
+}
+
+.mb-md {
+    margin-bottom: var(--spacing-md);
+}
+
+.mb-lg {
+    margin-bottom: var(--spacing-lg);
+}

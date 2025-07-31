@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traker - Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="app-title">Traker - Task Manager</h1>
+            <div class="header-actions">
+                <button id="add-task-btn" class="btn btn-start">Add Task</button>
+                <button id="refresh-btn" class="btn btn-start">Refresh</button>
+            </div>
+        </header>
+
+        <!-- Timer Widget -->
+        <section class="timer-section">
+            <div class="timer-container">
+                <div class="current-task-info">
+                    <h3>Current Task</h3>
+                    <div id="current-task-title">No task selected</div>
+                    <div id="current-task-status"></div>
+                </div>
+                
+                <div class="timer-display-container">
+                    <h3>Timer</h3>
+                    <div id="timer-display" class="timer-display work-time">00:00</div>
+                    <div id="timer-status" class="timer-status">Timer stopped</div>
+                    
+                    <div class="timer-controls">
+                        <button id="start-25-btn" class="btn btn-start">Start 25min</button>
+                        <button id="start-50-btn" class="btn btn-start">Start 50min</button>
+                        <button id="start-break-btn" class="btn btn-complete">Start Break (10min)</button>
+                        <button id="pause-timer-btn" class="btn btn-pause" disabled>Pause</button>
+                        <button id="stop-timer-btn" class="btn btn-delete" disabled>Stop</button>
+                    </div>
+                    
+                    <div class="custom-timer">
+                        <label for="custom-duration">Custom duration:</label>
+                        <input type="number" id="custom-duration" min="1" max="60" value="25">
+                        <button id="start-custom-btn" class="btn btn-start">Start Custom</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task List -->
+        <main class="task-list-container">
+            <div id="task-list" class="task-list">
+                <!-- Tasks will be populated here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="add-task-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Task</h2>
+                <button id="close-modal-btn" class="btn btn-flat">×</button>
+            </div>
+            <form id="add-task-form" class="modal-body">
+                <div class="form-group">
+                    <label for="task-title">Task Title:</label>
+                    <input type="text" id="task-title" class="form-input" placeholder="Enter task title..." required>
+                </div>
+                <div class="form-group">
+                    <label for="task-description">Description (optional):</label>
+                    <textarea id="task-description" class="form-textarea" placeholder="Enter task description..." rows="4"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-task-btn" class="btn">Cancel</button>
+                    <button type="submit" class="btn btn-start">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Subtask Modal -->
+    <div id="add-subtask-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Subtask</h2>
+                <button id="close-subtask-modal-btn" class="btn btn-flat">×</button>
+            </div>
+            <form id="add-subtask-form" class="modal-body">
+                <div class="form-group">
+                    <label for="subtask-title">Subtask Title:</label>
+                    <input type="text" id="subtask-title" class="form-input" placeholder="Enter subtask title..." required>
+                </div>
+                <div class="form-group">
+                    <label for="subtask-duration">Estimated Duration (minutes):</label>
+                    <input type="number" id="subtask-duration" class="form-input" min="5" max="50" value="30">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-subtask-btn" class="btn">Cancel</button>
+                    <button type="submit" class="btn btn-start">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
