@@ -81,6 +81,98 @@ body {
     gap: var(--spacing-sm);
 }
 
+/* Workspace Tabs */
+.workspace-tabs {
+    background-color: var(--bg-accent-color);
+    border-bottom: 1px solid var(--selection-bg-color);
+    padding: 0 var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    min-height: 48px;
+}
+
+.tabs-container {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.tabs-container::-webkit-scrollbar {
+    display: none;
+}
+
+.workspace-tab {
+    background-color: var(--bg-alt-color);
+    border: 1px solid var(--selection-bg-color);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    white-space: nowrap;
+    position: relative;
+    min-width: 80px;
+}
+
+.workspace-tab:hover {
+    background-color: var(--selection-bg-color);
+}
+
+.workspace-tab.active {
+    background-color: var(--bg-color);
+    border-bottom-color: var(--bg-color);
+    color: var(--info-color);
+}
+
+.workspace-tab .tab-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.workspace-tab .tab-name {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.workspace-tab .tab-close {
+    background: none;
+    border: none;
+    color: var(--fg-alt-color);
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: var(--border-radius-small);
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.workspace-tab:hover .tab-close {
+    opacity: 1;
+}
+
+.workspace-tab .tab-close:hover {
+    background-color: var(--alert-color);
+    color: white;
+}
+
+.add-workspace-btn {
+    margin-left: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-width: auto;
+    font-size: var(--font-size-lg);
+    line-height: 1;
+}
+
 /* Timer Section */
 .timer-section {
     background-color: var(--bg-alt-color);
@@ -573,4 +665,91 @@ body {
 
 .mb-lg {
     margin-bottom: var(--spacing-lg);
+}
+
+/* Color Picker Styles */
+.color-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.color-input {
+    width: 50px;
+    height: 30px;
+    border: none;
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    background: none;
+}
+
+.color-presets {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.color-preset {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--selection-bg-color);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.color-preset:hover {
+    border-color: var(--info-color);
+    transform: scale(1.1);
+}
+
+.color-preset.selected {
+    border-color: var(--info-color);
+    box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--info-color);
+}
+
+/* Notification Container */
+.notification-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.notification {
+    background-color: var(--bg-alt-color);
+    color: var(--fg-color);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-sm);
+    border-left: 4px solid var(--info-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+    animation: slideIn 0.3s ease;
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.notification.success {
+    border-left-color: var(--success-color);
+}
+
+.notification.warning {
+    border-left-color: var(--warning-color);
+}
+
+.notification.error {
+    border-left-color: var(--alert-color);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }

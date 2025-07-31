@@ -4,6 +4,8 @@ const { ipcRenderer } = require('electron');
 class TrakerUI {
     constructor() {
         this.tasks = [];
+        this.workspaces = [];
+        this.currentWorkspace = null;
         this.currentTask = null;
         this.timerState = {
             running: false,
@@ -15,6 +17,7 @@ class TrakerUI {
 
         this.initializeElements();
         this.attachEventListeners();
+        this.loadWorkspaces();
         this.loadTasks();
     }
 
@@ -22,6 +25,10 @@ class TrakerUI {
         // Header elements
         this.addTaskBtn = document.getElementById('add-task-btn');
         this.refreshBtn = document.getElementById('refresh-btn');
+
+        // Workspace elements
+        this.workspaceTabsContainer = document.getElementById('workspace-tabs-container');
+        this.addWorkspaceBtn = document.getElementById('add-workspace-btn');
 
         // Timer elements
         this.currentTaskTitle = document.getElementById('current-task-title');
@@ -42,16 +49,21 @@ class TrakerUI {
         // Modals
         this.addTaskModal = document.getElementById('add-task-modal');
         this.addSubtaskModal = document.getElementById('add-subtask-modal');
+        this.addWorkspaceModal = document.getElementById('add-workspace-modal');
         this.closeModalBtn = document.getElementById('close-modal-btn');
         this.closeSubtaskModalBtn = document.getElementById('close-subtask-modal-btn');
+        this.closeWorkspaceModalBtn = document.getElementById('close-workspace-modal-btn');
 
         // Forms
         this.addTaskForm = document.getElementById('add-task-form');
         this.addSubtaskForm = document.getElementById('add-subtask-form');
+        this.addWorkspaceForm = document.getElementById('add-workspace-form');
         this.taskTitle = document.getElementById('task-title');
         this.taskDescription = document.getElementById('task-description');
         this.subtaskTitle = document.getElementById('subtask-title');
         this.subtaskDuration = document.getElementById('subtask-duration');
+        this.workspaceName = document.getElementById('workspace-name');
+        this.workspaceColor = document.getElementById('workspace-color');
 
         // Notification container
         this.notificationContainer = document.getElementById('notification-container');
@@ -61,6 +73,9 @@ class TrakerUI {
         // Header actions
         this.addTaskBtn.addEventListener('click', () => this.showAddTaskModal());
         this.refreshBtn.addEventListener('click', () => this.loadTasks());
+
+        // Workspace actions
+        this.addWorkspaceBtn.addEventListener('click', () => this.showAddWorkspaceModal());
 
         // Timer controls
         this.start25Btn.addEventListener('click', () => this.startTimer(25));
@@ -76,12 +91,15 @@ class TrakerUI {
         // Modal controls
         this.closeModalBtn.addEventListener('click', () => this.hideAddTaskModal());
         this.closeSubtaskModalBtn.addEventListener('click', () => this.hideAddSubtaskModal());
+        this.closeWorkspaceModalBtn.addEventListener('click', () => this.hideAddWorkspaceModal());
         document.getElementById('cancel-task-btn').addEventListener('click', () => this.hideAddTaskModal());
         document.getElementById('cancel-subtask-btn').addEventListener('click', () => this.hideAddSubtaskModal());
+        document.getElementById('cancel-workspace-btn').addEventListener('click', () => this.hideAddWorkspaceModal());
 
         // Form submissions
         this.addTaskForm.addEventListener('submit', (e) => this.handleAddTask(e));
         this.addSubtaskForm.addEventListener('submit', (e) => this.handleAddSubtask(e));
+        this.addWorkspaceForm.addEventListener('submit', (e) => this.handleAddWorkspace(e));
 
         // Close modals on outside click
         this.addTaskModal.addEventListener('click', (e) => {
@@ -89,6 +107,23 @@ class TrakerUI {
         });
         this.addSubtaskModal.addEventListener('click', (e) => {
             if (e.target === this.addSubtaskModal) this.hideAddSubtaskModal();
+        });
+        this.addWorkspaceModal.addEventListener('click', (e) => {
+            if (e.target === this.addWorkspaceModal) this.hideAddWorkspaceModal();
+        });
+
+        // Color preset handling
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('color-preset')) {
+                const color = e.target.dataset.color;
+                this.workspaceColor.value = color;
+                
+                // Update selected state
+                document.querySelectorAll('.color-preset').forEach(preset => {
+                    preset.classList.remove('selected');
+                });
+                e.target.classList.add('selected');
+            }
         });
 
         // IPC listeners
@@ -99,6 +134,106 @@ class TrakerUI {
 
         ipcRenderer.on('timer-notification', (event, message, type) => {
             this.showNotification(message, type);
+        });
+
+        ipcRenderer.on('workspaces-updated', (event, workspaces, currentWorkspace) => {
+            this.workspaces = workspaces;
+            this.currentWorkspace = currentWorkspace;
+            this.renderWorkspaceTabs();
+        });
+    }
+
+    // Workspace Management
+    async loadWorkspaces() {
+        try {
+            const workspaces = await ipcRenderer.invoke('get-all-workspaces');
+            const currentWorkspace = await ipcRenderer.invoke('get-current-workspace');
+            this.workspaces = workspaces;
+            this.currentWorkspace = currentWorkspace;
+            this.renderWorkspaceTabs();
+        } catch (error) {
+            this.showNotification('Error loading workspaces', 'error');
+            console.error('Error loading workspaces:', error);
+        }
+    }
+
+    async handleAddWorkspace(e) {
+        e.preventDefault();
+        const name = this.workspaceName.value.trim();
+        const color = this.workspaceColor.value;
+
+        if (!name) return;
+
+        try {
+            await ipcRenderer.invoke('create-workspace', name, color);
+            this.hideAddWorkspaceModal();
+            this.addWorkspaceForm.reset();
+            this.showNotification('Workspace created successfully', 'success');
+        } catch (error) {
+            this.showNotification('Error creating workspace', 'error');
+            console.error('Error creating workspace:', error);
+        }
+    }
+
+    async switchToWorkspace(workspaceId) {
+        try {
+            await ipcRenderer.invoke('switch-workspace', workspaceId);
+            this.loadTasks(); // Reload tasks for new workspace
+            this.showNotification('Switched workspace', 'success');
+        } catch (error) {
+            this.showNotification('Error switching workspace', 'error');
+            console.error('Error switching workspace:', error);
+        }
+    }
+
+    async deleteWorkspace(workspaceId) {
+        if (this.workspaces.length <= 1) {
+            this.showNotification('Cannot delete the last workspace', 'warning');
+            return;
+        }
+
+        if (confirm('Are you sure you want to delete this workspace? All tasks in it will be deleted.')) {
+            try {
+                await ipcRenderer.invoke('delete-workspace', workspaceId);
+                this.showNotification('Workspace deleted', 'info');
+            } catch (error) {
+                this.showNotification('Error deleting workspace', 'error');
+                console.error('Error deleting workspace:', error);
+            }
+        }
+    }
+
+    renderWorkspaceTabs() {
+        this.workspaceTabsContainer.innerHTML = '';
+
+        this.workspaces.forEach(workspace => {
+            const tab = document.createElement('div');
+            tab.className = `workspace-tab ${workspace.id === this.currentWorkspace?.id ? 'active' : ''}`;
+            tab.addEventListener('click', () => this.switchToWorkspace(workspace.id));
+
+            const color = document.createElement('div');
+            color.className = 'tab-color';
+            color.style.backgroundColor = workspace.color;
+
+            const name = document.createElement('span');
+            name.className = 'tab-name';
+            name.textContent = workspace.name;
+
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'tab-close';
+            closeBtn.textContent = '×';
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.deleteWorkspace(workspace.id);
+            });
+
+            tab.appendChild(color);
+            tab.appendChild(name);
+            if (this.workspaces.length > 1) {
+                tab.appendChild(closeBtn);
+            }
+
+            this.workspaceTabsContainer.appendChild(tab);
         });
     }
 
@@ -522,6 +657,27 @@ class TrakerUI {
         this.addSubtaskModal.classList.add('hidden');
         this.addSubtaskForm.reset();
         this.currentSubtaskParent = null;
+    }
+
+    showAddWorkspaceModal() {
+        this.addWorkspaceModal.classList.remove('hidden');
+        this.workspaceName.focus();
+        
+        // Reset color presets selection
+        document.querySelectorAll('.color-preset').forEach(preset => {
+            preset.classList.remove('selected');
+        });
+        document.querySelector('.color-preset[data-color="#81a1c1"]')?.classList.add('selected');
+    }
+
+    hideAddWorkspaceModal() {
+        this.addWorkspaceModal.classList.add('hidden');
+        this.addWorkspaceForm.reset();
+        
+        // Reset color presets selection
+        document.querySelectorAll('.color-preset').forEach(preset => {
+            preset.classList.remove('selected');
+        });
     }
 
     // Notification System

@@ -21,6 +21,7 @@ class Task {
         this.title = title;
         this.description = description;
         this.parentId = parentId;
+        this.workspaceId = null; // Will be set by TaskManager
         this.status = TaskStatus.PENDING;
         this.taskType = parentId === null ? TaskType.MAIN : TaskType.SUBTASK;
         this.createdAt = new Date();
@@ -157,6 +158,7 @@ class Task {
             title: this.title,
             description: this.description,
             parentId: this.parentId,
+            workspaceId: this.workspaceId,
             status: this.status,
             taskType: this.taskType,
             createdAt: this.createdAt.toISOString(),
@@ -177,6 +179,7 @@ class Task {
     static fromJSON(data) {
         const task = new Task(data.title, data.description, data.parentId);
         task.id = data.id;
+        task.workspaceId = data.workspaceId;
         task.status = data.status;
         task.taskType = data.taskType;
         task.createdAt = new Date(data.createdAt);

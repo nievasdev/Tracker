@@ -3,19 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traker - Task Manager</title>
+    <title>Tracker - Task Manager</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="app-container">
         <!-- Header -->
         <header class="header">
-            <h1 class="app-title">Traker - Task Manager</h1>
+            <h1 class="app-title">Tracker - Task Manager</h1>
             <div class="header-actions">
                 <button id="add-task-btn" class="btn btn-start">Add Task</button>
                 <button id="refresh-btn" class="btn btn-start">Refresh</button>
             </div>
         </header>
+
+        <!-- Workspace Tabs -->
+        <nav class="workspace-tabs">
+            <div class="tabs-container" id="workspace-tabs-container">
+                <!-- Workspace tabs will be dynamically inserted here -->
+            </div>
+            <button id="add-workspace-btn" class="btn btn-start add-workspace-btn" title="Add Workspace">+</button>
+        </nav>
 
         <!-- Timer Widget -->
         <section class="timer-section">
@@ -99,6 +107,40 @@
                 <div class="modal-footer">
                     <button type="button" id="cancel-subtask-btn" class="btn">Cancel</button>
                     <button type="submit" class="btn btn-start">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Workspace Modal -->
+    <div id="add-workspace-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Workspace</h2>
+                <button id="close-workspace-modal-btn" class="btn btn-flat">×</button>
+            </div>
+            <form id="add-workspace-form" class="modal-body">
+                <div class="form-group">
+                    <label for="workspace-name">Workspace Name:</label>
+                    <input type="text" id="workspace-name" class="form-input" placeholder="Enter workspace name..." required>
+                </div>
+                <div class="form-group">
+                    <label for="workspace-color">Color:</label>
+                    <div class="color-picker">
+                        <input type="color" id="workspace-color" class="color-input" value="#81a1c1">
+                        <div class="color-presets">
+                            <button type="button" class="color-preset" data-color="#81a1c1" style="background-color: #81a1c1;" title="Nordic Blue"></button>
+                            <button type="button" class="color-preset" data-color="#a3be8c" style="background-color: #a3be8c;" title="Nordic Green"></button>
+                            <button type="button" class="color-preset" data-color="#ebcb8b" style="background-color: #ebcb8b;" title="Nordic Yellow"></button>
+                            <button type="button" class="color-preset" data-color="#bf616a" style="background-color: #bf616a;" title="Nordic Red"></button>
+                            <button type="button" class="color-preset" data-color="#b48ead" style="background-color: #b48ead;" title="Nordic Purple"></button>
+                            <button type="button" class="color-preset" data-color="#88c0d0" style="background-color: #88c0d0;" title="Nordic Cyan"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancel-workspace-btn" class="btn">Cancel</button>
+                    <button type="submit" class="btn btn-start">Create Workspace</button>
                 </div>
             </form>
         </div>

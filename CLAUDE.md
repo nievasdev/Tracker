@@ -231,7 +231,7 @@ Before considering UI changes complete:
 
 ## Git Workflow
 
-**CRITICAL: After completing each task, you MUST create a commit and push to main:**
+**CRITICAL: After completing each task, you MUST ALWAYS create a commit and push to main:**
 
 ```bash
 # After finishing any task or significant change
@@ -244,6 +244,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 git push origin main
 ```
 
+**MANDATORY RULE: COMMIT AND PUSH AFTER EVERY REQUEST**
+- **ALWAYS** commit and push after completing ANY user request
+- **NO EXCEPTIONS** - this applies to ALL tasks, big or small
+- Every completed request = 1 commit + 1 push
+- This is automatic and should be done without being asked
+
 **Task Completion Requirements:**
 - Every completed task = 1 commit
 - Use descriptive commit messages
@@ -253,6 +259,8 @@ git push origin main
   - `feat: add Nordic Dark theme to GTK application`
   - `fix: eliminate CSS parser warnings`
   - `refactor: convert Python GTK to Electron`
+  - `feat: add workspace tabs system`
+  - `ui: remove application menu bar`
 
 ## File Structure
 

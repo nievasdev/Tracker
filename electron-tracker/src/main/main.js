@@ -79,148 +79,8 @@ class TrakerApp {
     }
 
     createMenu() {
-        const template = [
-            {
-                label: 'File',
-                submenu: [
-                    {
-                        label: 'New Task',
-                        accelerator: 'CmdOrCtrl+N',
-                        click: () => {
-                            this.mainWindow.webContents.send('show-add-task-modal');
-                        }
-                    },
-                    { type: 'separator' },
-                    {
-                        label: 'Refresh',
-                        accelerator: 'CmdOrCtrl+R',
-                        click: () => {
-                            this.mainWindow.webContents.send('refresh-tasks');
-                        }
-                    },
-                    { type: 'separator' },
-                    {
-                        label: 'Quit',
-                        accelerator: process.platform === 'darwin' ? 'Cmd+Q' : 'Ctrl+Q',
-                        click: () => {
-                            app.quit();
-                        }
-                    }
-                ]
-            },
-            {
-                label: 'Timer',
-                submenu: [
-                    {
-                        label: 'Start 25min',
-                        accelerator: 'CmdOrCtrl+1',
-                        click: () => {
-                            this.mainWindow.webContents.send('start-timer', 25);
-                        }
-                    },
-                    {
-                        label: 'Start 50min',
-                        accelerator: 'CmdOrCtrl+2',
-                        click: () => {
-                            this.mainWindow.webContents.send('start-timer', 50);
-                        }
-                    },
-                    {
-                        label: 'Start Break',
-                        accelerator: 'CmdOrCtrl+B',
-                        click: () => {
-                            this.mainWindow.webContents.send('start-break-timer');
-                        }
-                    },
-                    { type: 'separator' },
-                    {
-                        label: 'Pause Timer',
-                        accelerator: 'CmdOrCtrl+P',
-                        click: () => {
-                            this.mainWindow.webContents.send('pause-timer');
-                        }
-                    },
-                    {
-                        label: 'Stop Timer',
-                        accelerator: 'CmdOrCtrl+S',
-                        click: () => {
-                            this.mainWindow.webContents.send('stop-timer');
-                        }
-                    }
-                ]
-            },
-            {
-                label: 'View',
-                submenu: [
-                    { role: 'reload' },
-                    { role: 'forceReload' },
-                    { role: 'toggleDevTools' },
-                    { type: 'separator' },
-                    { role: 'resetZoom' },
-                    { role: 'zoomIn' },
-                    { role: 'zoomOut' },
-                    { type: 'separator' },
-                    { role: 'togglefullscreen' }
-                ]
-            },
-            {
-                label: 'Help',
-                submenu: [
-                    {
-                        label: 'About Traker',
-                        click: () => {
-                            dialog.showMessageBox(this.mainWindow, {
-                                type: 'info',
-                                title: 'About Traker',
-                                message: 'Traker - Task Manager',
-                                detail: 'A productivity-focused task management application with built-in time tracking.\n\nVersion: 1.0.0\nBuilt with Electron and Nordic Dark Theme'
-                            });
-                        }
-                    },
-                    {
-                        label: 'Keyboard Shortcuts',
-                        click: () => {
-                            dialog.showMessageBox(this.mainWindow, {
-                                type: 'info',
-                                title: 'Keyboard Shortcuts',
-                                message: 'Traker Shortcuts',
-                                detail: 'Ctrl+N - New Task\nCtrl+R - Refresh\nCtrl+1 - Start 25min timer\nCtrl+2 - Start 50min timer\nCtrl+B - Start break\nCtrl+P - Pause timer\nCtrl+S - Stop timer'
-                            });
-                        }
-                    }
-                ]
-            }
-        ];
-
-        // macOS specific menu adjustments
-        if (process.platform === 'darwin') {
-            template.unshift({
-                label: app.getName(),
-                submenu: [
-                    { role: 'about' },
-                    { type: 'separator' },
-                    { role: 'services' },
-                    { type: 'separator' },
-                    { role: 'hide' },
-                    { role: 'hideOthers' },
-                    { role: 'unhide' },
-                    { type: 'separator' },
-                    { role: 'quit' }
-                ]
-            });
-
-            // Window menu
-            template[4].submenu = [
-                { role: 'close' },
-                { role: 'minimize' },
-                { role: 'zoom' },
-                { type: 'separator' },
-                { role: 'front' }
-            ];
-        }
-
-        const menu = Menu.buildFromTemplate(template);
-        Menu.setApplicationMenu(menu);
+        // Remove the application menu completely
+        Menu.setApplicationMenu(null);
     }
 
     async initializeTaskManager() {
@@ -361,6 +221,64 @@ class TrakerApp {
             }
         });
 
+        // Workspace Management IPC handlers
+        ipcMain.handle('get-all-workspaces', async () => {
+            try {
+                return this.taskManager.getAllWorkspaces();
+            } catch (error) {
+                console.error('Error getting workspaces:', error);
+                throw error;
+            }
+        });
+
+        ipcMain.handle('get-current-workspace', async () => {
+            try {
+                return this.taskManager.getCurrentWorkspace();
+            } catch (error) {
+                console.error('Error getting current workspace:', error);
+                throw error;
+            }
+        });
+
+        ipcMain.handle('create-workspace', async (event, name, color) => {
+            try {
+                const workspace = this.taskManager.createWorkspace(name, color);
+                this.notifyWorkspacesUpdated();
+                return workspace;
+            } catch (error) {
+                console.error('Error creating workspace:', error);
+                throw error;
+            }
+        });
+
+        ipcMain.handle('switch-workspace', async (event, workspaceId) => {
+            try {
+                const success = this.taskManager.switchWorkspace(workspaceId);
+                if (success) {
+                    this.notifyWorkspacesUpdated();
+                    this.notifyTasksUpdated();
+                }
+                return success;
+            } catch (error) {
+                console.error('Error switching workspace:', error);
+                throw error;
+            }
+        });
+
+        ipcMain.handle('delete-workspace', async (event, workspaceId) => {
+            try {
+                const success = this.taskManager.deleteWorkspace(workspaceId);
+                if (success) {
+                    this.notifyWorkspacesUpdated();
+                    this.notifyTasksUpdated();
+                }
+                return success;
+            } catch (error) {
+                console.error('Error deleting workspace:', error);
+                throw error;
+            }
+        });
+
         // Application IPC handlers
         ipcMain.handle('show-save-dialog', async () => {
             try {
@@ -401,6 +319,14 @@ class TrakerApp {
         if (this.mainWindow && !this.mainWindow.isDestroyed()) {
             const tasks = this.taskManager.getAllTasks();
             this.mainWindow.webContents.send('tasks-updated', tasks);
+        }
+    }
+
+    notifyWorkspacesUpdated() {
+        if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+            const workspaces = this.taskManager.getAllWorkspaces();
+            const currentWorkspace = this.taskManager.getCurrentWorkspace();
+            this.mainWindow.webContents.send('workspaces-updated', workspaces, currentWorkspace);
         }
     }
 
