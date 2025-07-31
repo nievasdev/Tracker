@@ -71,6 +71,13 @@ tracker --dev    # Development mode
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
+### Desktop Integration
+
+After installation, Tracker will be available in:
+- **dmenu/rofi**: Type `tracker` to launch
+- **Application launchers**: Look for "Tracker" in your application menu
+- **System menus**: Found in Office/ProjectManagement categories
+
 ### Building for Distribution
 
 #### Build for Current Platform

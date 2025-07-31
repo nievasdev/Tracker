@@ -45,9 +45,22 @@ echo "Commands:"
 echo "  tracker          - Start Tracker in production mode"
 echo "  tracker --dev    - Start Tracker in development mode"
 echo ""
+
+# Install desktop file for application launchers
+DESKTOP_FILE="$HOME/.local/share/applications/tracker.desktop"
+mkdir -p "$(dirname "$DESKTOP_FILE")"
+cp assets/tracker.desktop "$DESKTOP_FILE"
+chmod +x "$DESKTOP_FILE"
+update-desktop-database ~/.local/share/applications/ 2>/dev/null || true
+
+echo "Desktop integration installed - Tracker now appears in:"
+echo "  • dmenu/rofi (type 'tracker')"
+echo "  • Application launchers"
+echo "  • System menus"
+echo ""
 echo "Note: Make sure $HOME/.local/bin is in your PATH."
 echo "Add this line to your ~/.bashrc or ~/.zshrc if needed:"
 echo "export PATH=\"\$HOME/.local/bin:\$PATH\""
 echo ""
 echo "To uninstall, run:"
-echo "rm -rf \"$APP_DIR\" && rm \"$INSTALL_DIR/tracker\""
+echo "rm -rf \"$APP_DIR\" && rm \"$INSTALL_DIR/tracker\" && rm \"$DESKTOP_FILE\""
